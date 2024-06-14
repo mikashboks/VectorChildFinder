@@ -1,33 +1,57 @@
-apply plugin: 'com.android.library'
-apply plugin: 'maven-publish'
-group = 'com.github.devsideal'
+plugins {
+    id("com.android.library")
+    id("kotlin-android")
+    id("maven-publish")
+}
 
 android {
-    compileSdk 33
-
-
+    compileSdk 34
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 33
-
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        minSdkVersion(21)
+        targetSdkVersion(34)
         vectorDrawables.useSupportLibrary = true
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        consumerProguardFiles("consumer-proguard-rules.pro")
+        setProperty("archivesBaseName", "com.mikashboks.sequencelayout-${versionName}")
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    namespace 'com.devs.vectorchildfinder'
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    kotlin {
+        jvmToolchain {
+            languageVersion.set(JavaLanguageVersion.of(JavaVersion.VERSION_17.toString()))
+        }
+    }
+
+    namespace 'com.devs.vectorchildfinder'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId "com.github.devsideal"
+                artifactId "VectorChildFinder"
+                version "1.0.3"
+            }
+        }
+    }
 }
 
 dependencies {
